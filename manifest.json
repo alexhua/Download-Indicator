@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Elegant Download Indicator",
+  "version": "1.0",
+  "description": "A beautiful animated download status indicator",
+  "permissions": ["downloads"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "64": "icon48.png",
+      "128": "icon128.png"
+    }
+  }
+}
