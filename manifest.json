@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Elegant Download Indicator",
   "version": "1.0",
-  "description": "A beautiful animated download status indicator",
+  "description": "An elegant animated download status indicator",
   "permissions": ["downloads"],
   "background": {
     "service_worker": "background.js",

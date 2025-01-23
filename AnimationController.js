@@ -1,5 +1,5 @@
-import { DownloadAnimation, CompleteAnimation, ErrorAnimation } from './Animation.js';
-import { INTERVAL, FADE_INTERVAL } from './Constants.js';
+import { DownloadAnimation, CompleteAnimation, ErrorAnimation, ProgressAnimation } from './Animation.js';
+import { FRAME_INTERVAL, FADE_INTERVAL } from './Constants.js';
 import { IconManager } from './IconManager.js';
 import { TransitionManager } from './TransitionManager.js';
 
@@ -9,9 +9,10 @@ export class AnimationController {
     this.intervalId = null;
     this.timeoutId = null;
     this.fadeIntervalId = null;
+    this.progressAnimation = null;
   }
 
-  start(type) {
+  start(type, progress) {
     let newAnimation = null;
     switch (type) {
       case 'download':
@@ -24,25 +25,41 @@ export class AnimationController {
         newAnimation = new ErrorAnimation();
         break;
       case 'progress':
-        newAnimation = new ProgressAnimation();
+        if (progress < 0 || progress > 1) {
+          console.error("AnimationController: Invalid progress value.")
+          return;
+        }
+        if (!this.progressAnimation) {
+          this.progressAnimation = new ProgressAnimation();
+        }
+        newAnimation = this.progressAnimation;
+        this.progressAnimation.setProgress(progress);
         break;
       default:
-        throw new Error(`Invalid animation type: ${type}`);
+        throw new Error(`AnimationController: Invalid animation type: ${type}`);
     }
 
-    if (this.transitionManager.currentAnimation) {
-      this.transitionManager.startTransition(
-        this.transitionManager.currentAnimation,
-        newAnimation
-      );
+    if (this.transitionManager.currentAnimation &&
+      this.transitionManager.currentAnimation != this.progressAnimation) {
+      const currentAnimation = this.transitionManager.isTransitioning ?
+        this.transitionManager.nextAnimation : this.transitionManager.currentAnimationAnimation;
+
+      this.transitionManager.startTransition(currentAnimation, newAnimation);
     } else {
       this.transitionManager.currentAnimation = newAnimation;
+    }
+
+    // Stop existing fadeout
+    if (this.fadeIntervalId) {
+      clearInterval(this.fadeIntervalId);
+      this.fadeIntervalId = null;
     }
 
     // Start animation loop
     if (!this.intervalId) {
       this.#startAnimationLoop();
     }
+
     // Clear any existing timeout auto-stop
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
@@ -50,27 +67,21 @@ export class AnimationController {
 
     // Set new timeout for auto-stop
     this.timeoutId = setTimeout(() => {
-      this.#stop();
+      this.#stop(type);
     }, newAnimation.duration);
-
-    // Stop existing fadeout
-    if (this.fadeIntervalId) {
-      clearInterval(this.fadeIntervalId);
-      this.fadeIntervalId = null;
-    }
   }
 
   #startAnimationLoop() {
     this.intervalId = setInterval(async () => {
       const currentTime = performance.now();
-      const imageData = this.transitionManager.update(currentTime);
+      const imageData = this.transitionManager.requestFrame(currentTime);
       if (imageData) {
         await IconManager.setIcon(imageData);
       }
-    }, INTERVAL);
+    }, FRAME_INTERVAL);
   }
 
-  async #stop() {
+  async #stop(type) {
     // Clear the auto-stop timeout if it exists
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
@@ -81,6 +92,13 @@ export class AnimationController {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
+
+    // No need fade-out for progress animation
+    if (type == 'progress') {
+      this.progressAnimation?.setProgress(0);
+      this.transitionManager.currentAnimation = null;
+      return;
+    };
 
     if (this.transitionManager.currentAnimation) {
       let progress = 0;

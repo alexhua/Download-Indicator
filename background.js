@@ -11,11 +11,21 @@ chrome.downloads.onCreated.addListener((downloadItem) => {
 chrome.downloads.onChanged.addListener((delta) => {
   if (delta.id === currentDownloadId) {
     if (delta.state?.current === 'complete') {
-      controller.start('complete');
       currentDownloadId = null;
     } else if (delta.error?.current) {
       controller.start('error');
       currentDownloadId = null;
+    } else {
+      // simulate download progress
+      let progress = 1;
+      const id = setInterval(() => {
+        controller.start('progress', progress / 100);
+        progress += 10;
+        if (progress >= 100) {
+          controller.start('complete');
+          clearInterval(id);
+        }
+      }, 1000);
     }
   }
 });
