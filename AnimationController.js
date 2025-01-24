@@ -93,13 +93,6 @@ export class AnimationController {
       this.intervalId = null;
     }
 
-    // No need fade-out for progress animation
-    if (type == 'progress') {
-      this.progressAnimation?.setProgress(0);
-      this.transitionManager.currentAnimation = null;
-      return;
-    };
-
     if (this.transitionManager.currentAnimation) {
       let progress = 0;
       this.fadeIntervalId = setInterval(async () => {
