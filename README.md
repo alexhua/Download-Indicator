@@ -2,7 +2,7 @@
 
 This is a Chrome extension demo which could render animations at extension icon dynamically.
 
-## Feature
+## Features
 
 - Indicate downloading status via icon animation
 - Extension Icon transition animation
@@ -21,13 +21,13 @@ Tune the constants at `Constants.js`.
 
 - Support rendering image resource to canvas
 
-## How to test
+## Test
 
 Download and save a file from web
 
 ## Screenshot
 
-<video controls src="demo.mp4" title="Title"></video>
+![Screenshot](demo.webp)
 
 ## License
 
