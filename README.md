@@ -1,29 +1,29 @@
 # Elegant Download Indicator
 
-This is a Chrome extension demo which could render animations at extension icon dynamically.
+This is a Chrome extension demo that dynamically renders animations on the extension icon.  
 
 ## Features
 
-- Indicate downloading status via icon animation
-- Extension Icon transition animation
-- Animation fade out effect
-- Extension icon management
+- Indicate download status with icon animations  
+- Smooth transition animations 
+- Fade-out effect for animations  
+- Dynamic management of the extension icon  
 
 ## Development
 
-The animation is implemented by javascript canvas 2d API.
+The animation is implemented using the JavaScript Canvas 2D API.
 
-You could write your own icon animation by extending **BaseAnimation** and implement the **render** function at `Animation.js`.
+You could create custom icon animations by extending **BaseAnimation** and implement the **render** function in `Animation.js`.  
 
-Tune the constants at `Constants.js`.
+Adjust constants in `Constants.js` to fine-tune the animations.  
 
 ## Todo
 
-- Support rendering image resource to canvas
+- Add support for rendering image resources to the canvas  
 
 ## Test
 
-Download and save a file from web
+Download and save a file from the web to see the animation in action.  
 
 ## Screenshot
 
@@ -31,4 +31,4 @@ Download and save a file from web
 
 ## License
 
-This demo is licensed under BSD 3-Clause License.
+This demo is licensed under the BSD 3-Clause License.

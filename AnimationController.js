@@ -42,7 +42,7 @@ export class AnimationController {
     if (this.transitionManager.currentAnimation &&
       this.transitionManager.currentAnimation != this.progressAnimation) {
       const currentAnimation = this.transitionManager.isTransitioning ?
-        this.transitionManager.nextAnimation : this.transitionManager.currentAnimationAnimation;
+        this.transitionManager.nextAnimation : this.transitionManager.currentAnimation;
 
       this.transitionManager.startTransition(currentAnimation, newAnimation);
     } else {
