@@ -39,13 +39,12 @@ export class AnimationController {
         throw new Error(`AnimationController: Invalid animation type: ${type}`);
     }
 
-    if (this.transitionManager.currentAnimation &&
-      this.transitionManager.currentAnimation != this.progressAnimation) {
-      const currentAnimation = this.transitionManager.isTransitioning ?
-        this.transitionManager.nextAnimation : this.transitionManager.currentAnimation;
+    const currentAnimation = this.transitionManager.isTransitioning ?
+      this.transitionManager.nextAnimation : this.transitionManager.currentAnimation;
 
+    if (currentAnimation?.constructor !== newAnimation.constructor) {
       this.transitionManager.startTransition(currentAnimation, newAnimation);
-    } else {
+    } else if (!this.transitionManager.isTransitioning) {
       this.transitionManager.currentAnimation = newAnimation;
     }
 
